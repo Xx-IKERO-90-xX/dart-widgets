@@ -27,28 +27,7 @@ class InfoComarcaDetall extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               MyWeatherInfo(),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Población:"),
-                  Text("${comarca.poblacion}"),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Latitud:"),
-                  Text("${comarca.latitud}"),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Longitud:"),
-                  Text("${comarca.longitud}"),
-                ],
-              ),
+              
             ],
           ),
         ),
