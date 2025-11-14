@@ -1,86 +1,111 @@
 import 'package:comarcasgui/models/comarca.dart';
 import 'package:comarcasgui/repository/repository_ejemplo.dart';
+import 'package:comarcasgui/screens/infocomarca_general.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter/material.dart';
 import 'package:comarcasgui/screens/widgets/my_weather_info.dart';
 
 class InfoComarcaDetall extends StatelessWidget {
-  const InfoComarcaDetall({
+  final String comarcaName;
+
+  const InfoComarcaDetall({required this.comarcaName, super.key});
+
+  get bottomNavigationBar => null;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: const Text("Provincias")),
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [ComarcaDetallContent(comarcaName: comarcaName)],
+            ),
+          ),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+            currentIndex: 1, // 0 = general, 1 = detallada
+            onTap: (index) {
+              if (index == 0) {
+                // Si toca "Información general"
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => InfoComarcaGeneral(comarcaName),
+                  ),
+                );
+              }
+            },
+            unselectedItemColor: Colors.grey,
+            selectedItemColor: Colors.purple,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.info_outline),
+                label: "Información general",
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.wb_sunny_outlined),
+                  label: "Información detallada")
+            ]));
+  }
+}
+
+class ComarcaDetallContent extends StatelessWidget {
+  final String comarcaName;
+
+  const ComarcaDetallContent({
+    required this.comarcaName,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    Comarca comarca = RepositoryEjemplo.obtenerInfoComarca();
+    Comarca? comarca = RepositoryEjemplo.obtenerInfoComarca(comarcaName);
 
-    // TO-DO
-    // Añadir la información siguiente sobre la comarca:
-    // Población (num. de habitantes), latitud y longitud.
-    // Podéis combinar Column y Row para mostrar la información tabulada
-    // Antes de la información, deberemos mostrar la información sobre el tiempo en la comarca,
-    // mediante el widtget personalizado MyWeatherInfo(), que se os proporciona ya implementado
-    return Scaffold(
-      appBar: AppBar(title: const Text("Info Comarca")),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const MyWeatherInfo(),
-              const SizedBox(height: 16),
+    if (comarca == null) {
+      return Center(child: Text("No se encontró información de la comarca"));
+    }
 
-              // 🔹 Dos textos uno al lado del otro
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Población:',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(width: 50),
-                  Text(
-                    comarca.poblacion.toString(),
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Latitud:',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(width: 50),
-                  Text(
-                    comarca.latitud.toString(),
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Longitud:',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(width: 50),
-                  Text(
-                    comarca.longitud.toString(),
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            ],
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const MyWeatherInfo(),
+          const SizedBox(height: 16),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Población:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(comarca.poblacion.toString(), style: const TextStyle(fontSize: 16)),
+              ],
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Latitud:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(comarca.latitud.toString(), style: const TextStyle(fontSize: 16)),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Longitud:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(comarca.longitud.toString(), style: const TextStyle(fontSize: 16)),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

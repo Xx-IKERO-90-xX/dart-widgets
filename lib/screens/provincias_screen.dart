@@ -1,5 +1,6 @@
 import 'package:comarcasgui/models/provincia.dart';
 import 'package:comarcasgui/repository/repository_ejemplo.dart';
+import 'package:comarcasgui/screens/comarcas_screen.dart';
 import 'package:flutter/material.dart';
 
 /* Pantalla ProvinciasScreen: muestra tres CircleAvatar con las distintas provincias */
@@ -9,65 +10,75 @@ class ProvinciasScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(                  // Estructura de la pantalla Material Design
-      body: Center(                   // Centramos el contenido
-        child: SingleChildScrollView( // Contenedor con scrollo por si nos salimos del espacio disponible
-          child: Column(              // Organizamos las provincias en forma de columna
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children:               // Obtendremos la lista de widgets con las provincias con la 
-                                      // función privada _creaListaProvincias.
-                  _creaListaProvincias(RepositoryEjemplo.obtenerProvincias())),
+    return Scaffold(
+      appBar: AppBar(title: const Text("Provincias")),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children:
+                _creaListaProvincias(RepositoryEjemplo.obtenerProvincias()),
+          ),
         ),
       ),
     );
   }
 }
 
-List <Widget> _creaListaProvincias(List<Provincia> provincias) {
-  // Devolveremos una lista de widgets
+List<Widget> _creaListaProvincias(List<Provincia> provincias) {
   List<Widget> lista = [];
 
-  // Recorremos la lista de provincias
   for (Provincia provincia in provincias) {
-    lista.add( // Y añadimos a la lista un widget personalizado de tipo ProvinciaRoundButton
-        ProvinciaRoundButton(nombre: provincia.nombre, imagen: provincia.imagen ?? ""));
-    lista.add(const SizedBox(height: 20)); // Añadimos un espacio después del widget con la província
+    lista.add(
+      ProvinciaRoundButton(
+        nombre: provincia.nombre,
+        imagen: provincia.imagen ?? "",
+      ),
+    );
+    lista.add(const SizedBox(height: 20));
   }
   return lista;
 }
 
 class ProvinciaRoundButton extends StatelessWidget {
-  const ProvinciaRoundButton({required this.imagen, required this.nombre, super.key});
+  const ProvinciaRoundButton(
+      {required this.imagen, required this.nombre, super.key});
 
   final String imagen;
   final String nombre;
 
   @override
   Widget build(BuildContext context) {
-    // TO-DO
-    
-    // devolveremos un widget de tipo CircleAvatar con las siguientes propiedades
-    // radius: 110
-    // imagen de fondo: la imagen que nos han proporcionado. Esta imagen se obtendrá de Internet
-    // Este widget contendrá como hijo un widget de tipo Text, con el nombre de la provincia
-    // Para darle estilo al texto, puedes utilizar: style: Theme.of(context).textTheme.displayMedium,
-    // (en el Main, hemos definido ya un estilo personalizado para la aplicación, por tanto, de aquí hacemos referencia a ese tema)
-
-    
-
-    return MaterialApp(
-      title: '$nombre',
-      debugShowCheckedModeBanner: false,
-      home: (
-        CircleAvatar(
+    return SizedBox(
+      width: 220,
+      height: 220,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: const CircleBorder(),
+          padding: EdgeInsets.zero,
+        ),
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => ComarcasScreen(nombre)));
+        },
+        child: CircleAvatar(
           radius: 110,
           backgroundImage: NetworkImage(imagen),
-          child: Text(
-            nombre,
-            style: Theme.of(context).textTheme.displayMedium,
-          )
-        )
-      )
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              color: Colors.black54, // Fondo semitransparente para el texto
+              child: Text(
+                nombre,
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .displayMedium
+                    ?.copyWith(color: Colors.white, fontSize: 20),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

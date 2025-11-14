@@ -1,30 +1,64 @@
-
 import 'package:comarcasgui/models/comarca.dart';
 import 'package:comarcasgui/models/provincia.dart';
+import 'package:comarcasgui/repository/repository_data.dart';
+/* 
+    Esta clase accede a la clase RepositoryData para
+    obtener la información sobre provincias y comarcas.
+*/
+class RepositoryEjemplo {
+  static List<Provincia> obtenerProvincias() {
+    // Devuelve una lista de provincias, obtenidas a partir de la propiedad
+    // provincies de RepositoryData.
 
-/*
-Esta clase nos proporciona información estática de ejemplo sobre las provincias y comarcas.
+    List<Provincia> provincies = [];
+    for (var p in RepositoryData.provincies) {
+      provincies.add(Provincia(imagen: p["img"], nombre: p["provincia"]));
+    }
+    return provincies;
+  }
 
- */
-class RepositoryEjemplo{
-
-  static List<Provincia> obtenerProvincias(){
-    var provincies=[{"provincia":"València","img":"https://upload.wikimedia.org/wikipedia/commons/5/5d/LA_ALBUFERA_DE_VALENCIA_02.jpg"},{"provincia":"Alacant","img":"https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Alicante%2C_Spain.jpg/640px-Alicante%2C_Spain.jpg"},{"provincia":"Castelló","img":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Pe%C3%B1%C3%ADscola_-_aerial_view.jpg/640px-Pe%C3%B1%C3%ADscola_-_aerial_view.jpg"}];
-    return provincies.map((provincia) => Provincia.fromJSON(provincia)).toList();
-  }    
-
-
-  static List<dynamic> obtenerComarcas(){
-    // Atención, no se trata de objetos de tipo Comarca, 
+  static List<dynamic> obtenerComarcas(String provincia) {
+    // Devuelve la lista de comarcas de una determinada provincia.
+    
+    // Atención, NO se trata de objetos de tipo Comarca,
     // ya que únicamente tenemos el nombre y la imagen.
     // Se trata de un JSON, y por tanto es una List<dynamic>
-    var comarques=[{"nom":"El Comtat","img":"https://upload.wikimedia.org/wikipedia/commons/a/a5/Senda_hacia_el_Montcabrer.JPG"},{"nom":"L'alcoià","img":"https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Ull_del_Moro._Alcoi.JPG/1024px-Ull_del_Moro._Alcoi.JPG"},{"nom":"La Marina Alta","img":"https://upload.wikimedia.org/wikipedia/commons/a/a9/Montgo.jpg"},{"nom":"La Marina Baixa","img":"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Puig_Campana.jpg/1024px-Puig_Campana.jpg"},{"nom":"L'Alt Vinalopó","img":"https://upload.wikimedia.org/wikipedia/commons/8/8a/Iglesia_de_Santa_Mar%C3%ADa_y_Castillo_de_Villena.jpg"},{"nom":"El Vinalopó Mitjà","img":"https://upload.wikimedia.org/wikipedia/commons/2/23/Elda-Petrel.jpg"},{"nom":"El Baix Vinalopó","img":"https://upload.wikimedia.org/wikipedia/commons/8/89/Rio_vinalopo_elche_2006-09-04.jpg"},{"nom":"L'alacantí","img":"https://upload.wikimedia.org/wikipedia/commons/f/ff/Alacantivista.jpg"},{"nom":"El baix Segura","img":"https://upload.wikimedia.org/wikipedia/commons/b/bf/Paseo_mar%C3%ADtimo_Torrevieja.JPG"}];
-    return comarques;
-  }    
+    List<dynamic> comarques = [];
 
-  static Comarca obtenerInfoComarca(){
-    var comarca={"comarca":"El baix Segura","capital":"Oriola","poblacio":"325.278","img":"https://upload.wikimedia.org/wikipedia/commons/b/bf/Paseo_mar%C3%ADtimo_Torrevieja.JPG","desc":"El Baix Segura (en castellà i cooficialment La Vega Baja) és una comarca del sud del País Valencià amb capital a Oriola. És una comarca de llengua castellana excepte al municipi de Guardamar del Segura, al sud del riu, i la pedania oriolana de Barba-roja, que conserven el valencià. El castellà de la comarca però, igual que a Múrcia, hi té nombrosos préstecs del català. Això es deu al fet que esta comarca era, al segle XV, completament valencianoparlant, però ciutats com Oriola es van castellanitzar pels repoblaments des del segle XVII endavant. ","latitud":38.0856891,"longitud":-0.9448805};
-    return Comarca.fromJSON(comarca);
-  }    
+    // Recorremos la lista de provincies en RepositoryData para encontrar la que se busca
+    for (var p in RepositoryData.provincies) {
+      if (p["provincia"] == provincia) {
+        // Cuando encontramos la provincia, reocrremos las comarcas
+        // y añadimos a la lista comarques un JSON con el nombre
+        // y la imagen de cada comarca
+        
+        for (var com in p["comarques"]) {
+          comarques.add({"nom": com["comarca"], "img": com["img"]});
+        }
+      }
+    }
+
+    return comarques;
+  }
+
+  static Comarca? obtenerInfoComarca(String nombreComarca) {
+  for (var p in RepositoryData.provincies) {
+    for (var c in p["comarques"]) {
+      if (c["comarca"] == nombreComarca) {
+        // Retorna un objeto Comarca con los datos encontrados
+        return Comarca(
+          comarca: c["comarca"],
+          desc: c["desc"],
+          img: c["img"],
+          poblacion: c["poblacio"] is String
+            ? int.parse(c["poblacio"].replaceAll(".", "")) // elimina puntos si los hay
+            : (c["poblacio"] as num).toInt(),
+          latitud: c["latitud"],
+          longitud: c["longitud"],
+        );
+      }
+    }
+  }
+  return null;}
 
 }

@@ -32,6 +32,8 @@ class Comarca {
     longitud = objecteJSON["longitud"] ?? 0.0;
   }
 
+  get imagen => null;
+
   @override
   String toString() {
     return '''\x1B[34mnom:\t\t\x1B[36m$comarca\n\x1B[0m
