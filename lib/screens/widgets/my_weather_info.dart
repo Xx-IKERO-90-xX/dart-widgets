@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:comarcasgui/models/comarca.dart';
 
 class MyWeatherInfo extends StatelessWidget {
   const MyWeatherInfo({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         _obtenerIconoTiempo("0"),
@@ -40,7 +40,8 @@ class MyWeatherInfo extends StatelessWidget {
     );
   }
 
-  Widget obtenerWidgetDireccionViento(String direccionViento, BuildContext context) {
+  Widget obtenerWidgetDireccionViento(
+      String direccionViento, BuildContext context) {
     double dir = double.parse(direccionViento);
     late Icon icono;
 

@@ -1,11 +1,12 @@
+import 'package:comarcasgui/models/comarca.dart';
 import 'package:comarcasgui/repository/repository_ejemplo.dart';
 import 'package:comarcasgui/screens/infocomarca_detall.dart';
 import 'package:flutter/material.dart';
+import 'package:comarcasgui/repository/comarcas_repository.dart';
 
 // Clase principal de pantalla
 // Clase principal de pantalla
 class InfoComarcaGeneral extends StatelessWidget {
-
   final String comarcaName;
 
   InfoComarcaGeneral(this.comarcaName, {super.key});
@@ -17,17 +18,28 @@ class InfoComarcaGeneral extends StatelessWidget {
           automaticallyImplyLeading: true,
           title: const Text("Provincias"),
         ),
-        body: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height - kToolbarHeight,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: InfoComarcaCard(comarcaName: comarcaName),
-            ),
-          ),
-        ),
+        body: FutureBuilder<Comarca?>(
+            future: ComarcasRepository().getInfoComarca(comarcaName),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              final comarca = snapshot.data!;
+
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight:
+                        MediaQuery.of(context).size.height - kToolbarHeight,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: InfoComarcaCard(comarca: comarca),
+                  ),
+                ),
+              );
+            }),
         bottomNavigationBar: BottomNavigationBar(
           onTap: (index) {
             if (index == 1) {
@@ -61,14 +73,12 @@ class InfoComarcaGeneral extends StatelessWidget {
 
 // Tarjeta de información
 class InfoComarcaCard extends StatelessWidget {
-  final String comarcaName;
+  final Comarca comarca;
 
-  const InfoComarcaCard({required this.comarcaName, super.key});
+  const InfoComarcaCard({required this.comarca, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final comarca = RepositoryEjemplo.obtenerInfoComarca(comarcaName);
-
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -97,7 +107,7 @@ class InfoComarcaCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  comarcaName,
+                  comarca.comarca,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 10),

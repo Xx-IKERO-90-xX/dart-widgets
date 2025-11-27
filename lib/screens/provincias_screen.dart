@@ -1,6 +1,6 @@
 import 'package:comarcasgui/models/provincia.dart';
-import 'package:comarcasgui/repository/repository_ejemplo.dart';
 import 'package:comarcasgui/screens/comarcas_screen.dart';
+import 'package:comarcasgui/repository/comarcas_repository.dart';
 import 'package:flutter/material.dart';
 
 /* Pantalla ProvinciasScreen: muestra tres CircleAvatar con las distintas provincias */
@@ -11,21 +11,28 @@ class ProvinciasScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Provincias")),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children:
-                _creaListaProvincias(RepositoryEjemplo.obtenerProvincias()),
-          ),
-        ),
-      ),
-    );
+        appBar: AppBar(title: const Text("Provincias")),
+        body: FutureBuilder<List<dynamic>>(
+          future: ComarcasRepository().getProvincias(),
+          builder:
+              (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            final provincias = snapshot.data!;
+
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: _creaListaProvincias(provincias),
+            );
+          },
+        ));
   }
 }
 
-List<Widget> _creaListaProvincias(List<Provincia> provincias) {
+List<Widget> _creaListaProvincias(List<dynamic> provincias) {
   List<Widget> lista = [];
 
   for (Provincia provincia in provincias) {
@@ -58,7 +65,8 @@ class ProvinciaRoundButton extends StatelessWidget {
           padding: EdgeInsets.zero,
         ),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => ComarcasScreen(nombre)));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => ComarcasScreen(nombre)));
         },
         child: CircleAvatar(
           radius: 110,
@@ -66,7 +74,7 @@ class ProvinciaRoundButton extends StatelessWidget {
           child: Center(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              color: Colors.black54, // Fondo semitransparente para el texto
+              color: Colors.black54,
               child: Text(
                 nombre,
                 textAlign: TextAlign.center,

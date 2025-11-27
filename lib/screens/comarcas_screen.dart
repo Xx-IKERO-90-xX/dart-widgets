@@ -1,5 +1,5 @@
-import 'package:comarcasgui/repository/repository_ejemplo.dart';
-import 'package:comarcasgui/screens/infocomarca_general.dart' hide RepositoryEjemplo;
+import 'package:comarcasgui/screens/infocomarca_general.dart';
+import 'package:comarcasgui/repository/comarcas_repository.dart';
 import 'package:flutter/material.dart';
 
 class ComarcasScreen extends StatelessWidget {
@@ -11,11 +11,18 @@ class ComarcasScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Comarcas")),
-      body: Center(
-        child: _creaListaComarcas(
-          RepositoryEjemplo.obtenerComarcas(nombre),
-        ),
-      ),
+      body: FutureBuilder<List<dynamic>>(
+          future: ComarcasRepository().getComarcas(nombre),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
+
+            final comarcas = snapshot.data!;
+            return Center(
+              child: _creaListaComarcas(comarcas),
+            );
+          }),
     );
   }
 
@@ -44,10 +51,9 @@ class ComarcaCard extends StatelessWidget {
 
   final String img;
   final String comarca;
-  
+
   @override
   Widget build(BuildContext context) {
-    
     return SizedBox(
       height: 180,
       child: Card(
@@ -58,7 +64,10 @@ class ComarcaCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder:(context) => InfoComarcaGeneral(comarca)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => InfoComarcaGeneral(comarca)));
           },
           child: Stack(
             fit: StackFit.expand,
