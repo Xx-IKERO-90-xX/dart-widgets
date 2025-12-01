@@ -56,32 +56,38 @@ class ProvinciaRoundButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 220,
-      height: 220,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shape: const CircleBorder(),
-          padding: EdgeInsets.zero,
-        ),
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => ComarcasScreen(nombre)));
-        },
-        child: CircleAvatar(
-          radius: 110,
-          backgroundImage: NetworkImage(imagen),
-          child: Center(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              color: Colors.black54,
-              child: Text(
-                nombre,
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .displayMedium
-                    ?.copyWith(color: Colors.white, fontSize: 20),
+    return Center(
+      child: SizedBox(
+        width: 220,
+        height: 220,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: const CircleBorder(),
+            padding: EdgeInsets.zero,
+          ),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (_) => ComarcasScreen(nombre)));
+          },
+          child: CircleAvatar(
+            radius: 110,
+            backgroundImage: NetworkImage(imagen),
+            child: Center(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Text(nombre,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontFamily: 'leckerliOne',
+                        color: Color.fromARGB(255, 255, 255, 255),
+                        fontSize: 30,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 4,
+                            color: Colors.black,
+                            offset: Offset(2, 2),
+                          ),
+                        ])),
               ),
             ),
           ),

@@ -16,82 +16,109 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Comarcas")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Center(
-                child: Text('Login',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    )),
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Correo'),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Por favor, ingrese el correo";
-                  }
-                  if (!value.contains("@")) {
-                    return "Ingrese un correo válido.";
-                  }
-                  if (value != 'ikero90@gmail.com') {
-                    return "Correo no reconocido";
-                  }
-                  return null;
-                },
-                onSaved: (value) => correo = value,
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                decoration: const InputDecoration(labelText: "Contraseña"),
-                keyboardType: TextInputType.visiblePassword,
-                obscureText: true, // oculta la contraseña
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Tienes que introducir la contraseña";
-                  }
-                  if (value != "ikero8080") {
-                    return "Contraseña Incorrecta";
-                  }
-                  return null;
-                },
-                onSaved: (value) => contrasena = value,
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    // Si pasa la validación, navega a ProvinciasScreen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ProvinciasScreen(),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SizedBox(
+            height: 250,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      const Center(
+                        child: Text('Iniciar Sesión',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                            )),
                       ),
-                    );
-                  } else {
-                    // Muestra un SnackBar si el login es incorrecto
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Correo o contraseña incorrectos"),
-                        duration: Duration(seconds: 2),
-                        backgroundColor: Colors.red,
+                      TextFormField(
+                        decoration: const InputDecoration(labelText: 'Correo'),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Por favor, ingrese el correo";
+                          }
+                          if (!value.contains("@")) {
+                            return "Ingrese un correo válido.";
+                          }
+                          if (value != 'ikero90@gmail.com') {
+                            return "Correo no reconocido";
+                          }
+                          return null;
+                        },
+                        onSaved: (value) => correo = value,
                       ),
-                    );
-                  }
-                },
-                child: const Text("Iniciar Sesión"),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        decoration:
+                            const InputDecoration(labelText: "Contraseña"),
+                        keyboardType: TextInputType.visiblePassword,
+                        obscureText: true, // oculta la contraseña
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Tienes que introducir la contraseña";
+                          }
+                          if (value != "ikero8080") {
+                            return "Contraseña Incorrecta";
+                          }
+                          return null;
+                        },
+                        onSaved: (value) => contrasena = value,
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+                            // Si pasa la validación, navega a ProvinciasScreen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ProvinciasScreen(),
+                              ),
+                            );
+                          } else {
+                            // Muestra un SnackBar si el login es incorrecto
+                            Future<String?> response =
+                                showLoginFailDialog(context);
+                            response.then((value) => debugPrint(value));
+                          }
+                        },
+                        child: const Text("Iniciar Sesión"),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Future<String?> showLoginFailDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Login Fallado"),
+          content: const Text("Usuario o contraseña incorrecta."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, "Cerrar");
+              },
+              child: const Text("Cerrar"),
+            )
+          ],
+        );
+      },
     );
   }
 }

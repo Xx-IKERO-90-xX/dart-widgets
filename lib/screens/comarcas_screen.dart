@@ -94,15 +94,15 @@ class ComarcaCard extends StatelessWidget {
                   child: Text(
                     comarca.isEmpty ? "Comarca sin nombre" : comarca,
                     textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontFamily: 'Black Arial',
+                    style: const TextStyle(
+                      fontFamily: 'LeckerliOne',
                       fontSize: 40,
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white,
                       shadows: [
                         Shadow(
                           blurRadius: 0.6,
-                          color: Colors.black.withOpacity(0.7),
-                          offset: const Offset(2, 2),
+                          color: Colors.black,
+                          offset: Offset(2, 2),
                         ),
                       ],
                     ),

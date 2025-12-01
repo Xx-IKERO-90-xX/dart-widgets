@@ -1,5 +1,4 @@
 import 'package:comarcasgui/models/comarca.dart';
-import 'package:comarcasgui/repository/repository_ejemplo.dart';
 import 'package:comarcasgui/screens/infocomarca_detall.dart';
 import 'package:flutter/material.dart';
 import 'package:comarcasgui/repository/comarcas_repository.dart';
