@@ -1,6 +1,7 @@
 import 'package:comarcasgui/screens/infocomarca_general.dart';
 import 'package:comarcasgui/repository/comarcas_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:comarcasgui/screens/Navbars/ComarcaBottomNavbar.dart';
 
 class ComarcasScreen extends StatelessWidget {
   final String nombre; // ✅ Propiedad final
@@ -67,7 +68,9 @@ class ComarcaCard extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => InfoComarcaGeneral(comarca)));
+                    builder: (context) => ComarcaBottomNavigarion(
+                          comarcaName: comarca,
+                        )));
           },
           child: Stack(
             fit: StackFit.expand,

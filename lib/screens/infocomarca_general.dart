@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:comarcasgui/repository/comarcas_repository.dart';
 
 // Clase principal de pantalla
-// Clase principal de pantalla
 class InfoComarcaGeneral extends StatelessWidget {
   final String comarcaName;
 
@@ -13,58 +12,33 @@ class InfoComarcaGeneral extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: true,
-          title: const Text("Provincias"),
-        ),
-        body: FutureBuilder<Comarca?>(
-            future: ComarcasRepository().getInfoComarca(comarcaName),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(child: CircularProgressIndicator());
-              }
-
-              final comarca = snapshot.data!;
-
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight:
-                        MediaQuery.of(context).size.height - kToolbarHeight,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: InfoComarcaCard(comarca: comarca),
-                  ),
-                ),
-              );
-            }),
-        bottomNavigationBar: BottomNavigationBar(
-          onTap: (index) {
-            if (index == 1) {
-              // segunda pestaña
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      InfoComarcaDetall(comarcaName: comarcaName),
-                ),
-              );
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        title: const Text("Comarca"),
+      ),
+      body: FutureBuilder<Comarca?>(
+          future: ComarcasRepository().getInfoComarca(comarcaName),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
             }
-          },
-          selectedItemColor: Colors.purple,
-          unselectedItemColor: Colors.grey,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.info_outline),
-              label: "Informació general",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.wb_sunny_outlined),
-              label: "Informació detallada",
-            ),
-          ],
-        ));
+
+            final comarca = snapshot.data!;
+
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight:
+                      MediaQuery.of(context).size.height - kToolbarHeight,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: InfoComarcaCard(comarca: comarca),
+                ),
+              ),
+            );
+          }),
+    );
   }
 
   void setState(InfoComarcaDetall Function() param0) {}
@@ -110,10 +84,8 @@ class InfoComarcaCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  comarca?.desc ?? "Sin descripción disponible",
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
+                Text(comarca.desc ?? "Sin descripción disponible",
+                    textAlign: TextAlign.justify),
               ],
             ),
           ),
