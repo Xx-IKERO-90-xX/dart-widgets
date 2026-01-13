@@ -2,6 +2,8 @@ import 'package:comarcasgui/models/provincia.dart';
 import 'package:comarcasgui/screens/comarcas_screen.dart';
 import 'package:comarcasgui/repository/comarcas_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:comarcasgui/provider/comarcas_provider.dart';
 
 /* Pantalla ProvinciasScreen: muestra tres CircleAvatar con las distintas provincias */
 
@@ -10,41 +12,37 @@ class ProvinciasScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var providerComarcas = Provider.of<ComarcasProvider>(context);
+
     return Scaffold(
-        appBar: AppBar(title: const Text("Provincias")),
-        body: FutureBuilder<List<dynamic>>(
-          future: ComarcasRepository().getProvincias(),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            final provincias = snapshot.data!;
-
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: _creaListaProvincias(provincias),
-            );
-          },
-        ));
+        body: Center(
+      child: SingleChildScrollView(
+          child: Column(
+              children:
+                  _creaListaProvincias(providerComarcas.provincias ?? []))),
+    ));
   }
 }
 
 List<Widget> _creaListaProvincias(List<dynamic> provincias) {
   List<Widget> lista = [];
 
-  for (Provincia provincia in provincias) {
-    lista.add(
-      ProvinciaRoundButton(
-        nombre: provincia.nombre,
-        imagen: provincia.imagen ?? "",
-      ),
-    );
-    lista.add(const SizedBox(height: 20));
+  if (provincias.isEmpty) {
+    return [const CircularProgressIndicator()];
+  } else {
+    for (Provincia provincia in provincias) {
+      debugPrint(
+          "Provincia: ${provincia.nombre} con imagen: ${provincia.imagen}");
+      lista.add(
+        ProvinciaRoundButton(
+          nombre: provincia.nombre,
+          imagen: provincia.imagen ?? "",
+        ),
+      );
+      lista.add(const SizedBox(height: 20));
+    }
+    return lista;
   }
-  return lista;
 }
 
 class ProvinciaRoundButton extends StatelessWidget {
